@@ -19,7 +19,10 @@ export const handler = async () => {
   try {
     const res = await fetch(POSTS_URL);
     if (res.ok) {
-      posts = await res.json();
+      const data = await res.json();
+      // posts.json is { "posts": [...] } (as written by the /admin CMS),
+      // but accept a bare array too just in case.
+      posts = Array.isArray(data) ? data : (data && data.posts) || [];
     }
   } catch (e) {
     console.error('feed: could not fetch posts.json:', e.message);
