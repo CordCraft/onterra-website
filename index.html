@@ -674,6 +674,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 
+  <!-- Netlify Identity token handler: invite/confirmation/recovery links land on
+       the homepage, so only when such a token is present we load the Identity
+       widget, let it show the set-password dialog, then hand off to /admin.
+       Normal visitors never load this. -->
+  <script>
+  (function () {
+    if (!/invite_token|confirmation_token|recovery_token|email_change_token/.test(location.hash)) return;
+    var s = document.createElement('script');
+    s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+    s.onload = function () {
+      window.netlifyIdentity.on('login', function () { location.href = '/admin/'; });
+      window.netlifyIdentity.init();
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+
   <!-- App -->
   <script src="js/three-hero.js"></script>
   <script src="js/blog.js"></script>
