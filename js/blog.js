@@ -67,7 +67,9 @@
       tag.className = 'post__tag';
       tag.textContent = p.tag || 'Insight';
       media.appendChild(tag);
-      media.appendChild(imgWithFallback(p.image, p.seed || p.id, p.title));
+      const im = imgWithFallback(p.image, p.seed || p.id, p.title);
+      if (p.imageCredit) im.title = p.imageCredit;
+      media.appendChild(im);
 
       const ctaLabel = p.external
         ? 'Read on ' + (p.author || 'source') + ' →'

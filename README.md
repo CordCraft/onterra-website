@@ -106,6 +106,31 @@ onterra-website/
 - **Address:** No. 4 Adetunji Street, Lagos, Nigeria
 - **Phone / WhatsApp:** +234 814 766 9552 (contact form & buttons open a pre-filled WhatsApp chat)
 
+## Brand assets
+`assets/brand/` holds the logo system: `onterra-mark.svg` (emblem), `onterra-logo-dark.svg`
+(for dark backgrounds), `onterra-logo-light.svg` (for white backgrounds, letterheads) and
+`og-image.png` (the social share card). Regenerate the share card with
+`python build_og_image.py` (script lives in Downloads).
+
+## News card photos (automatic)
+`netlify/functions/news.mjs` attaches a relevant stock photo to every live headline.
+Add any of these free API keys as Netlify environment variables and it starts working,
+in this order of preference: `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY`, `PIXABAY_API_KEY`.
+No keys set = the built-in placeholder images keep showing. Nothing breaks either way.
+
+## Article images on demand (fal.ai, only when you choose)
+When writing your own article in /admin and you want a custom branded image:
+1. One-time: create `.env` next to `index.html` containing `FAL_KEY=your-key` (gitignored).
+2. Run: `python tools/generate-article-image.py "Your article title"`
+3. It saves to `images/insights/`, prints the path to paste into the editor's Image field.
+Costs about $0.03 per image. Nothing runs unless you run it.
+
+## Where visitor data lives
+Every gate signup and newsletter subscriber is stored in **Brevo → Contacts**, list
+"Onterra Family" (ID 2), with name, phone, and company attributes. Export any time via
+Brevo → Contacts → Export. Each investor-gate signup also emails a lead alert to
+**info@onterra.ng** with the person's full details, so your inbox is a second record.
+
 ## Still to come (per your note)
 - Real company numbers (currently the stats are safe placeholders, edit in `index.html`).
 - Your own field/operation photos (drop into `images/`, see image notes).
