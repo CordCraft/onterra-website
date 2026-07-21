@@ -29,6 +29,17 @@
   to = "/.netlify/functions/feed"
   status = 200
 
+# Image Studio (Identity-protected): generate a preview, then save to the repo
+[[redirects]]
+  from = "/api/generate-image"
+  to = "/.netlify/functions/generate-image"
+  status = 200
+
+[[redirects]]
+  from = "/api/save-image"
+  to = "/.netlify/functions/save-image"
+  status = 200
+
 # Sensible security headers for the whole site
 [[headers]]
   for = "/*"

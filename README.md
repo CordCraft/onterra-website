@@ -119,11 +119,17 @@ in this order of preference: `UNSPLASH_ACCESS_KEY`, `PEXELS_API_KEY`, `PIXABAY_A
 No keys set = the built-in placeholder images keep showing. Nothing breaks either way.
 
 ## Article images on demand (fal.ai, only when you choose)
-When writing your own article in /admin and you want a custom branded image:
-1. One-time: create `.env` next to `index.html` containing `FAL_KEY=your-key` (gitignored).
-2. Run: `python tools/generate-article-image.py "Your article title"`
-3. It saves to `images/insights/`, prints the path to paste into the editor's Image field.
-Costs about $0.03 per image. Nothing runs unless you run it.
+**Image Studio, works from any computer:** visit **onterra.ng/admin/studio.html**, log in
+(same Netlify Identity login as /admin), describe the article, preview the image, then
+click Save. The image is committed to GitHub and deploys with the site; paste the printed
+path into the editor's Image field in /admin.
+Needs two Netlify env vars: `FAL_KEY` (fal.ai API key) and `GITHUB_TOKEN` (fine-grained
+GitHub token, only this repo, permission Contents: Read and write). Generation is blocked
+for anyone not logged in, so the keys cannot be spent by strangers.
+Costs: about $0.003 per fast draft, $0.025 per best-quality image.
+
+**Local fallback (this computer only):** put `FAL_KEY=your-key` in a gitignored `.env`
+next to `index.html`, then `python tools/generate-article-image.py "Your article title"`.
 
 ## Where visitor data lives
 Every gate signup and newsletter subscriber is stored in **Brevo → Contacts**, list

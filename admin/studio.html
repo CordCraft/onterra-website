@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Onterra Image Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root{
+      --ink:#070b12; --ink-2:#0b1421; --amber:#f2a900; --amber-2:#ffc24d;
+      --text:#e9eef4; --muted:#93a6b8; --line:rgba(255,255,255,.10);
+      --teal:#1fa3b8;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--ink);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:3rem 1rem}
+    .studio{width:100%;max-width:680px}
+    .brand{display:flex;align-items:center;gap:.8rem;margin-bottom:2rem}
+    .brand b{font-family:'Sora',sans-serif;letter-spacing:.25em;font-size:1rem}
+    .brand small{display:block;color:var(--muted);letter-spacing:.15em;font-size:.62rem}
+    .card{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:2rem}
+    h1{font-family:'Sora',sans-serif;font-size:1.45rem;margin-bottom:.4rem}
+    .sub{color:var(--muted);font-size:.92rem;margin-bottom:1.6rem;line-height:1.6}
+    label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin:.9rem 0 .35rem;letter-spacing:.04em}
+    input,textarea,select{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:.75rem .9rem;font-family:inherit;font-size:.95rem}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Sora',sans-serif;font-weight:600;font-size:.92rem;padding:.85rem 1.5rem;border-radius:100px;border:1px solid transparent;cursor:pointer;transition:.25s;margin-top:1.2rem}
+    .btn--primary{background:var(--amber);color:#1a1100;width:100%}
+    .btn--primary:hover{background:var(--amber-2)}
+    .btn--primary:disabled{opacity:.55;cursor:wait}
+    .btn--ghost{border-color:var(--line);background:none;color:var(--text)}
+    .btn--ghost:hover{border-color:var(--amber);color:var(--amber)}
+    .preview{margin-top:1.6rem;display:none}
+    .preview img{width:100%;border-radius:12px;border:1px solid var(--line)}
+    .row{display:flex;gap:.8rem}
+    .row .btn{flex:1}
+    .msg{margin-top:1rem;font-size:.88rem;padding:.7rem 1rem;border-radius:10px;display:none;line-height:1.55}
+    .msg--ok{display:block;color:var(--teal);background:rgba(31,163,184,.08);border:1px solid rgba(31,163,184,.25)}
+    .msg--err{display:block;color:#f87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25)}
+    code{background:rgba(255,255,255,.07);padding:.15rem .45rem;border-radius:6px;font-size:.85em;user-select:all}
+    .cost{color:var(--muted);font-size:.78rem;margin-top:.5rem}
+    .gate-login{text-align:center;padding:2rem 0}
+    a{color:var(--amber)}
+  </style>
+</head>
+<body>
+  <div class="studio">
+    <div class="brand">
+      <svg viewBox="0 0 100 100" width="38" height="38" aria-hidden="true">
+        <path d="M50 16 L82 78 H18 Z" fill="none" stroke="#e9eef4" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M33 57 H67 M27.5 67 H72.5" fill="none" stroke="#93a6b8" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+        <circle cx="50" cy="16" r="8" fill="#f2a900"/>
+      </svg>
+      <div><b>ONTERRA</b><small>IMAGE STUDIO</small></div>
+    </div>
+
+    <div class="card">
+      <!-- logged out (default view until Identity reports a user) -->
+      <div id="loggedOut" class="gate-login">
+        <h1>Log in to continue</h1>
+        <p class="sub">Use the same login as the /admin dashboard.</p>
+        <button class="btn btn--primary" style="width:auto" onclick="netlifyIdentity.open('login')">Log in</button>
+      </div>
+
+      <!-- logged in -->
+      <div id="loggedIn" style="display:none">
+        <h1>Generate an article image</h1>
+        <p class="sub">
+          Describe the article and get a branded, on-style image. Preview first;
+          nothing is saved to the website until you click Save. Then paste the
+          printed path into the Image field in <a href="/admin/" target="_blank">/admin</a>.
+        </p>
+
+        <label for="title">Article title</label>
+        <input id="title" placeholder="e.g. Why marginal fields are the smart play in 2026" />
+
+        <label for="style">Scene description (optional, overrides the title as the subject)</label>
+        <textarea id="style" rows="2" placeholder="e.g. coiled tubing unit working on a wellpad at dusk"></textarea>
+
+        <label for="model">Quality</label>
+        <select id="model">
+          <option value="schnell">Fast draft, about $0.003 per image</option>
+          <option value="dev">Best quality, about $0.025 per image</option>
+        </select>
+
+        <button class="btn btn--primary" id="genBtn">Generate preview</button>
+        <p class="cost">Generating only previews the image. You approve it before it goes anywhere.</p>
+
+        <div class="preview" id="preview">
+          <img id="previewImg" alt="Generated preview" />
+          <div class="row">
+            <button class="btn btn--ghost" id="againBtn">Generate another</button>
+            <button class="btn btn--primary" id="saveBtn" style="width:auto">Save to website</button>
+          </div>
+        </div>
+
+        <div class="msg" id="msg"></div>
+        <button class="btn btn--ghost" style="margin-top:1.6rem" onclick="netlifyIdentity.logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let lastUrl = '';
+
+    function show(view) {
+      $('loggedOut').style.display = view === 'out' ? 'block' : 'none';
+      $('loggedIn').style.display = view === 'in' ? 'block' : 'none';
+    }
+    netlifyIdentity.on('init', (u) => show(u ? 'in' : 'out'));
+    netlifyIdentity.on('login', () => { show('in'); netlifyIdentity.close(); });
+    netlifyIdentity.on('logout', () => show('out'));
+    netlifyIdentity.init();
+
+    function note(text, ok) {
+      const m = $('msg');
+      m.className = 'msg ' + (ok ? 'msg--ok' : 'msg--err');
+      m.innerHTML = text;
+    }
+
+    async function authFetch(path, payload) {
+      const user = netlifyIdentity.currentUser();
+      if (!user) { netlifyIdentity.open('login'); throw new Error('Not logged in'); }
+      const token = await user.jwt();
+      const r = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || ('Request failed (' + r.status + ')'));
+      return data;
+    }
+
+    async function generate() {
+      const title = $('title').value.trim();
+      if (!title) { note('Give the article a title first.', false); return; }
+      $('genBtn').disabled = true;
+      $('genBtn').textContent = 'Generating…';
+      $('msg').className = 'msg';
+      try {
+        const data = await authFetch('/api/generate-image', {
+          title,
+          style: $('style').value.trim(),
+          model: $('model').value,
+        });
+        lastUrl = data.url;
+        $('previewImg').src = data.url;
+        $('preview').style.display = 'block';
+      } catch (e) {
+        note(e.message, false);
+      } finally {
+        $('genBtn').disabled = false;
+        $('genBtn').textContent = 'Generate preview';
+      }
+    }
+
+    async function save() {
+      if (!lastUrl) return;
+      $('saveBtn').disabled = true;
+      $('saveBtn').textContent = 'Saving…';
+      try {
+        const data = await authFetch('/api/save-image', {
+          url: lastUrl,
+          title: $('title').value.trim(),
+        });
+        note(
+          'Saved. It deploys with the site in about a minute.<br>' +
+          'Paste this into the Image field in /admin: <code>' + data.path + '</code>',
+          true
+        );
+      } catch (e) {
+        note(e.message, false);
+      } finally {
+        $('saveBtn').disabled = false;
+        $('saveBtn').textContent = 'Save to website';
+      }
+    }
+
+    $('genBtn').addEventListener('click', generate);
+    $('againBtn').addEventListener('click', generate);
+    $('saveBtn').addEventListener('click', save);
+  </script>
+</body>
+</html>
