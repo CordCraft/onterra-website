@@ -1,0 +1,43 @@
+# =========================================================
+# Onterra, Decap CMS configuration
+# This powers the visual editor at /admin. You write posts in
+# a friendly form; the CMS saves them into data/posts.json for
+# you. You never edit JSON by hand.
+# =========================================================
+
+backend:
+  name: git-gateway      # uses Netlify's Git Gateway + Identity (see README)
+  branch: main           # change if your default branch is named differently
+
+# Lets you preview the editor locally with the proxy server (see README)
+local_backend: true
+
+# Uploaded images are committed into the repo here
+media_folder: "images/blog"
+public_folder: "/images/blog"
+
+publish_mode: simple
+
+collections:
+  - name: "blog"
+    label: "Blog"
+    files:
+      - name: "posts"
+        label: "Blog posts"
+        file: "data/posts.json"
+        description: "Add, edit and reorder Onterra's own articles. Newest date shows first on the site."
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            label_singular: "Post"
+            summary: "{{fields.date}} — {{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "URL slug / ID", name: "id", widget: "string", hint: "Short, unique, no spaces. e.g. marginal-fields-2026" }
+              - { label: "Category tag", name: "tag", widget: "string", default: "Insight" }
+              - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+              - { label: "Author", name: "author", widget: "string", default: "Onterra Insights" }
+              - { label: "Cover image", name: "image", widget: "image", required: false, hint: "Optional. A relevant photo." }
+              - { label: "Short summary (card text)", name: "excerpt", widget: "text" }
+              - { label: "Article body", name: "body", widget: "markdown", hint: "Write normally. Headings, lists and bold all work." }

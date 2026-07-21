@@ -1,0 +1,50 @@
+# =========================================================
+# Onterra Nigeria Limited, Netlify configuration
+# =========================================================
+
+[build]
+  # The site is plain static files, so we just publish the root folder.
+  publish = "."
+  # Serverless functions (the auto-updating news engine) live here.
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Clean URL for the live news feed: /api/news -> the serverless function
+[[redirects]]
+  from = "/api/news"
+  to = "/.netlify/functions/news"
+  status = 200
+
+# Lead capture + Brevo sync: /api/subscribe -> the serverless function
+[[redirects]]
+  from = "/api/subscribe"
+  to = "/.netlify/functions/subscribe"
+  status = 200
+
+# RSS feed for Brevo newsletter automation
+[[redirects]]
+  from = "/feed.xml"
+  to = "/.netlify/functions/feed"
+  status = 200
+
+# Sensible security headers for the whole site
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Long cache for fingerprint-stable assets (fast repeat visits)
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
